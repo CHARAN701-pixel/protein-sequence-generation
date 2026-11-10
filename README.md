@@ -46,11 +46,30 @@ Install dependencies:
 python -m pip install -r requirements.txt
 ```
 
-## Prepare a dataset
+## Dataset: UniRef50
 
-Place a protein FASTA file at `data/raw/proteins.fasta`. Prefer a coherent protein family or a clearly defined dataset over an arbitrary mixture of unrelated proteins.
+We use UniRef50 representative sequences as the initial source. UniRef50 clusters related sequences at approximately 50% identity to reduce redundancy. The complete database is large, so this project downloads a capped subset through the official UniProt REST API.
 
-Record the source database, accessions, retrieval date, organism, filtering decisions, and licence/usage terms. Do not commit downloaded datasets unless redistribution is permitted.
+Install the project dependencies and retrieve up to 5,000 representatives:
+
+```bash
+python -m scripts.download_uniref50_subset --max-records 5000
+```
+
+This writes:
+
+- `data/raw/uniref50_subset.fasta` — representative protein sequences.
+- `data/raw/uniref50_subset.metadata.json` — query, retrieval time, API release information, and sampling note.
+
+The default query is `identity:0.5 AND length:[50 TO 500]`. You can change the query explicitly:
+
+```bash
+python -m scripts.download_uniref50_subset --query "identity:0.5 AND length:[100 TO 300]" --max-records 2000
+```
+
+**Sampling limitation:** this is a capped subset of the API search results, not a random or statistically representative sample of all UniRef50 clusters. It is suitable for learning the pipeline and testing a baseline. For biological interpretation or family-specific generation, define a protein family/taxon and use a targeted query, then document the selection criteria.
+
+Do not commit downloaded datasets unless redistribution is permitted. Record source, query, release, date, and accessions for any experiment.
 
 The FASTA parser accepts standard amino-acid letters and common ambiguity/special symbols for reporting. The current Markov baseline intentionally requires only the 20 standard amino acids; it stops with a clear message if the input contains other symbols rather than silently changing them.
 
