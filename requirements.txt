@@ -1,0 +1,3 @@
+# Core workflow uses the Python standard library.
+# Development and testing:
+pytest>=8.0
