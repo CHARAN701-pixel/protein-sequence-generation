@@ -1,3 +1,5 @@
-# Core workflow uses the Python standard library.
-# Development and testing:
+# HTTP client for the UniProt REST API downloader
+requests>=2.32
+
+# Development and testing
 pytest>=8.0
